@@ -4,6 +4,7 @@
     {
         public bool IsLeapYear(int i)
         {
+            // ergänzt am 1.3.20
             if (i % 4 == 0)
             {
                 if (i % 100 == 0)
