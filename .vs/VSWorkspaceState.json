@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\.nuget",
+    "\\docs",
+    "\\lib",
+    "\\lib\\MD2HTML",
+    "\\src",
+    "\\src\\LeapYear",
+    "\\src\\LeapYear.Tests"
+  ],
+  "SelectedNode": "\\src\\LeapYear\\LeapYear.cs",
+  "PreviewInSolutionExplorer": false
+}
