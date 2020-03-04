@@ -103,20 +103,49 @@ namespace LeapYear.Tests
             Assert.IsFalse(result);
         }
 
-        /*
-        //UNCOMMENT THIS SECTION FOR EXTRA CREDIT
+
+
         [TestMethod]
         public void LeapYear_returns_false_for_4AD()
         {
             bool result = leapYear.IsLeapYear(4);
             Assert.IsFalse(result);
         }
-        
+
+        //added by github User nicolibi
+        //leap years each definied anymore each 3 years
+        public void LeapYear_returns_false_for_6AD()
+        {
+            bool result = leapYear.IsLeapYear(6);
+            Assert.IsFalse(result);
+        }
+
+        //added by github User nicolibi
+        //no leap years between 10 BC and 7 AD
+        public void LeapYear_returns_false_for_10BC()
+        {
+            bool result = leapYear.IsLeapYear(-10);
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        //added by github User nicolibi
+        //no leap years between 10 BC and 7 AD, 3 BC would have been a leap year with the old rule
+        public void LeapYear_returns_false_for_3BC()
+        {
+            bool result = leapYear.IsLeapYear(-3);
+            Assert.IsFalse(result);
+        }
+
+
         [TestMethod]
         public void LeapYear_returns_false_for_0AD()
         {
             bool result = leapYear.IsLeapYear(0);
-            Assert.IsFalse(result);
+            //Assert.IsFalse(result);
+            Assert.Fail("Year 0 didn't exist");
+
+
         }
 
         [TestMethod]
@@ -145,7 +174,15 @@ namespace LeapYear.Tests
         {
             bool result = leapYear.IsLeapYear(-45);
             Assert.IsTrue(result);
-        }        
-         */
+        }
+
+        [TestMethod]
+        //added by github User nicolibi
+        //definition of leap years started in 46 BC
+        public void LeapYear_returns_false_for_48BC()
+        {
+            bool result = leapYear.IsLeapYear(-48);
+            Assert.IsFalse(result);
+        }
     }
 }
