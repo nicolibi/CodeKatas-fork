@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ReverseString
 {
@@ -10,7 +6,9 @@ namespace ReverseString
     {
         public string Reverse(string s)
         {
-            throw new NotImplementedException();
+            char[] CharList = s.ToCharArray();
+            Array.Reverse(CharList);
+            return new string(CharList);
         }
     }
 }
