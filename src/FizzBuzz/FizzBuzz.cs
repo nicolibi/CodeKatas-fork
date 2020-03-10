@@ -15,7 +15,6 @@
             else if (Inputvalue % 5 == 0)
             {
                 returnString = "Buzz";
-
             }
             else if (Inputvalue % 3 == 0)
             {
