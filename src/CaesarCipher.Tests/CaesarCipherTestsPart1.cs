@@ -19,7 +19,7 @@ namespace CaesarCipher.Tests
         public void TestCleanup()
         {
             caesarCipher = null;
-        }  
+        }
 
         [TestMethod]
         public void CaesarCipher_encodes_hello_world_with_4_shift()
@@ -34,5 +34,18 @@ namespace CaesarCipher.Tests
             var result = caesarCipher.Encode("ABC123", 1);
             Assert.AreEqual("BCD123", result);
         }
+        [TestMethod]
+        public void CaesarCipher_encode_Rot13()
+        {
+            var result = caesarCipher.Encode("The Quick Brown Fox Jumps Over The Lazy Dog", 13);
+            Assert.AreEqual("Gur Dhvpx Oebja Sbk Whzcf Bire Gur Ynml Qbt", result);
+        }
+        [TestMethod]
+        public void CaesarCipher_encodde_SpecialCharacter_ä()
+        {
+            var result = caesarCipher.Encode("Käse", 1);
+            Assert.AreEqual("Lbftf", result);
+        }
+
     }
 }
