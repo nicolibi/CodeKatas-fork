@@ -5,8 +5,8 @@ namespace CaesarCipher
 {
     public class CaesarCipher
     {
-        Regex regexitemLowerCase = new Regex("[a-z]");
-        Regex regexitemUpperCase = new Regex("[A-Z]");
+        Regex regexSpecialCharactersLowerCase = new Regex("[äöüß]");
+        Regex regexSpecialCharacersUpperCase = new Regex("[ÄÖÜ]");
         const int MinPositionUpperCase = 65;
         const int MaxPositionUpperCase = 90;
         const int MinPositionLowerCase = 97;
@@ -19,15 +19,17 @@ namespace CaesarCipher
             decode
         }
 
-        public string Encode(string s, int shift)
+        public string Encode(string decryptedString, int shift)
         {
             string encodedString = "";
-            foreach (char c in s)
+
+            decryptedString = ReplaceSpecialCharacters(decryptedString);
+
+            foreach (char c in decryptedString)
             {
-                if (regexitemLowerCase.IsMatch(c.ToString()) || regexitemUpperCase.IsMatch(c.ToString()))
+                if (Char.IsLetter(c))
                 {
-                    int unicode = GetUnicodeFromChar(c);
-                    int shiftedUnicodePosition = GetShiftedPositionOfUnicodeEncode(unicode, shift);
+                    int shiftedUnicodePosition = GetShiftedPositionOfUnicodeEncode(c, shift);
                     encodedString += GetCharacterFromUnicode(shiftedUnicodePosition);
                 }
                 else
@@ -40,18 +42,18 @@ namespace CaesarCipher
         }
 
 
-        public string Decode(string s, int shift)
+        public string Decode(string encryptedString, int shift)
         {
             string decodedString = "";
 
-            foreach (char c in s)
+            foreach (char c in encryptedString)
             {
-                if (regexitemLowerCase.IsMatch(c.ToString()) || regexitemUpperCase.IsMatch(c.ToString()))
+                if (Char.IsLetter(c))
                 {
-                    int unicode = GetUnicodeFromChar(c);
-                    //int shiftedUnicodePosition = GetShiftedPositionOfUnicode(unicode, shift, Operation.decode);
-                    decodedString += GetCharacterFromUnicode(unicode + shift);
+                    int shiftedUnicodePosition = GetShiftedPositionOfCharDecode(c, shift);
+                    decodedString += GetCharacterFromUnicode(shiftedUnicodePosition);
                 }
+
                 else
                 {
                     decodedString += c;
@@ -73,21 +75,63 @@ namespace CaesarCipher
             return Convert.ToChar(unicode);
         }
 
-        protected int GetShiftedPositionOfUnicodeEncode(int unicodeOld, int charShift)
+        private string ReplaceSpecialCharacters(string originalString)
         {
-
-            shiftedPosition = (unicodeOld + charShift);
-
-
-            if (unicodeOld > MinPositionLowerCase && shiftedPosition > MaxPositionLowerCase)
+            string replacedString = "";
+            if (regexSpecialCharacersUpperCase.IsMatch(originalString))
             {
-                shiftedPostionRotated = ((shiftedPosition - MinPositionLowerCase) % 26) + MinPositionLowerCase;
-                return shiftedPostionRotated;
+                replacedString = originalString.Replace("Ä", "Ae").Replace("Ö", "Oe").Replace("Ü", "Ue");
+                return replacedString;
             }
-            else if (unicodeOld > MinPositionUpperCase && unicodeOld < MaxPositionUpperCase && shiftedPosition > MaxPositionUpperCase)
+
+
+            if (regexSpecialCharactersLowerCase.IsMatch(originalString))
             {
-                shiftedPostionRotated = ((shiftedPosition - MinPositionUpperCase) % 26) + MinPositionUpperCase;
-                return shiftedPostionRotated;
+                replacedString = originalString.Replace("ä", "ae").Replace("ö", "oe").Replace("ü", "ue").Replace("ß", "ss");
+                return replacedString;
+            }
+            else
+            {
+                return originalString;
+            }
+
+
+
+
+        }
+
+        protected int GetShiftedPositionOfUnicodeEncode(char charToBeEncrypted, int charShift)
+        {
+            int charPosition = Convert.ToUInt16(charToBeEncrypted);
+            shiftedPosition = (charPosition + charShift);
+
+
+            if (Char.IsLower(charToBeEncrypted))
+            {
+                int ueberhang = shiftedPosition - MaxPositionLowerCase;
+                if (ueberhang > 0)
+                {
+                    shiftedPostionRotated = (ueberhang - 1) + MinPositionLowerCase;
+                    return shiftedPostionRotated;
+                }
+                else
+                {
+                    return shiftedPosition;
+                }
+            }
+            else if (char.IsUpper(charToBeEncrypted))
+            {
+                int ueberhang = shiftedPosition - MaxPositionUpperCase;
+                if (ueberhang > 0)
+                {
+                    shiftedPostionRotated = (ueberhang - 1) + MinPositionUpperCase;
+                    return shiftedPostionRotated;
+                }
+                else
+                {
+                    return shiftedPosition;
+                }
+
             }
             else
             {
@@ -95,26 +139,44 @@ namespace CaesarCipher
             }
         }
 
-        protected int GetShiftedPositionOfUnicodeDecode(int unicodeOld, int charShift)
+        protected int GetShiftedPositionOfCharDecode(char charToBeEncrypted, int charShift)
         {
+            int charPosition = Convert.ToUInt16(charToBeEncrypted);
+            shiftedPosition = (charToBeEncrypted - charShift);
 
-            shiftedPosition = (unicodeOld - charShift);
+            if (Char.IsLower(charToBeEncrypted))
+            {
+                int ueberhang = shiftedPosition - MinPositionLowerCase;
+                if (ueberhang < 0)
+                {
+                    shiftedPostionRotated = ((ueberhang + 1) + MaxPositionLowerCase);
+                    return shiftedPostionRotated;
+                }
+                else
+                {
+                    return shiftedPosition;
+                }
 
-            if (unicodeOld > MinPositionLowerCase && shiftedPosition > MaxPositionLowerCase)
-            {
-                shiftedPostionRotated = ((shiftedPosition - MinPositionLowerCase) % 26) + MinPositionLowerCase;
-                return shiftedPostionRotated;
+
             }
-            else if (unicodeOld > MinPositionUpperCase && shiftedPosition > MaxPositionUpperCase)
+            else if (char.IsUpper(charToBeEncrypted))
             {
-                shiftedPostionRotated = ((shiftedPosition - MinPositionUpperCase) % 26) + MinPositionUpperCase;
-                return shiftedPostionRotated;
+                int ueberhang = shiftedPosition - MinPositionUpperCase;
+                if (ueberhang < 0)
+                {
+                    shiftedPostionRotated = ((ueberhang + 1) + MaxPositionUpperCase);
+                    return shiftedPostionRotated;
+                }
+                else
+                {
+                    return shiftedPosition;
+                }
+
             }
-            else
-            {
-                return shiftedPosition;
-            }
+            return shiftedPostionRotated;
         }
+
+
 
     }
 }
